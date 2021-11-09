@@ -1,5 +1,6 @@
 import torch
 import cv2
+from tqdm import tqdm
 
 
 class Detector:
@@ -16,12 +17,6 @@ class Detector:
         return labels, cord
 
     def plot_boxes(self, results, frame):
-        """
-        plotting the bounding boxes and label on to the frame.
-        :param results: contains labels and coordinates predicted by model on the given frame.
-        :param frame: Frame which has been scored.
-        :return: Frame with bounding boxes and labels ploted on it.
-        """
         labels, cord = results
         n = len(labels)
         x_shape, y_shape = frame.shape[1], frame.shape[0]
@@ -34,17 +29,18 @@ class Detector:
                 cv2.putText(frame, self.classes[int(labels[i])] + ' {:.2f}'.format(row[4].item()), (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
         return frame
 
-    def __call__(self):
+    def __call__(self, show=False):
         """
-        show video
+        run detection with option show
         """
-        print(self.classes)
         cap = self.video
         assert cap.isOpened()
-        while True:
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        for _ in tqdm(range(length)):
             ret, frame = cap.read()
-            if not ret or cv2.waitKey(30) & 0xFF == ord('q'):
-                break
             results = self.score_frame(frame)
-            frame = self.plot_boxes(results, frame)
-            cv2.imshow('video', frame)
+            if show:
+                if cv2.waitKey(30) & 0xFF == ord('q'):
+                    break
+                frame = self.plot_boxes(results, frame)
+                cv2.imshow('video', frame)
