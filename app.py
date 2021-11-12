@@ -1,3 +1,3 @@
-from object_extractor import Extractor
+from detector import Detector
 
-Extractor('video/sample.mp4')()
+Detector('video/sample3.mp4')()
