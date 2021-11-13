@@ -73,7 +73,7 @@ class Detector:
 
         # Apply NMS and filter object other than person (cls:0)
         pred = non_max_suppression(pred, self.acc_threshold, self.iou_threshold,
-                                   classes=[i for i in range(len(self.classes))])
+                                   classes=[i for i in range(1, len(self.classes))])
 
         # get all obj ************************************************************
         det = pred[0]  # for video, bz is 1
@@ -90,8 +90,7 @@ class Detector:
             confs = det[:, 4:5].cpu()
 
             # ****************************** deepsort ****************************
-            outputs = self.tracker.update(bbox_xywh, confs, im0)
-            # (#ID, 5) x1,y1,x2,y2,track_ID
+            outputs = self.tracker.update(bbox_xywh, confs, im0)  # x1,y1,x2,y2,track_ID
         else:
             outputs = torch.zeros((0, 5))
 
