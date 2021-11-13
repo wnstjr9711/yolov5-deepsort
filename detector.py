@@ -43,8 +43,9 @@ class Detector:
 
             if len(output) > 0:
                 bbox_xyxy = output[:, :4]
-                identities = output[:, -1]
-                frame = self.draw_boxes(frame, bbox_xyxy, identities)  # BGR
+                idx = output[:, -2]
+                name = output[:, -1]
+                frame = self.draw_boxes(frame, bbox_xyxy, idx, name)  # BGR
 
             cv2.imshow("test", frame)
             if cv2.waitKey(1) == ord('q'):  # q to quit
@@ -94,8 +95,7 @@ class Detector:
 
         return outputs
 
-    @staticmethod
-    def draw_boxes(img, bbox, identities=None, offset=(0, 0)):
+    def draw_boxes(self, img, bbox, idx, name, offset=(0, 0)):
         for i, box in enumerate(bbox):
             x1, y1, x2, y2 = [int(i) for i in box]
             x1 += offset[0]
@@ -103,9 +103,10 @@ class Detector:
             y1 += offset[1]
             y2 += offset[1]
             # box text and bar
-            id = int(identities[i]) if identities is not None else 0
+            _idx = int(idx[i])
+            _name = self.classes[int(name[i])]
             color = (0, 255, 0)
-            label = '{}{:d}'.format("", id)
+            label = '{}-{}'.format(_name, _idx)
             t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
             cv2.rectangle(img, (x1, y1), (x2, y2), color, 3)
             cv2.rectangle(img, (x1, y1), (x1 + t_size[0] + 3, y1 + t_size[1] + 4), color, -1)
