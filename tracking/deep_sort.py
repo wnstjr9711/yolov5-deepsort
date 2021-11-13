@@ -25,7 +25,7 @@ class DeepSort(object):
         # tracker maintain a list contains(self.tracks) for each Track object
         self.tracker = Tracker(metric, max_iou_distance=max_iou_distance, max_age=max_age, n_init=n_init)
 
-    def update(self, bbox_xywh, confidences, ori_img):
+    def update(self, bbox_xywh, confidences, ori_img, class_index):
         # bbox_xywh (#obj,4), [xc,yc, w, h]     bounding box for each person
         # conf (#obj,1)
 
@@ -39,7 +39,7 @@ class DeepSort(object):
         #  generate detections class object for each person *********************************************************
         # filter object with less confidence
         # each Detection obj maintain the location(bbox_tlwh), confidence(conf), and appearance feature
-        detections = [Detection(bbox_tlwh[i], conf, features[i]) for i, conf in enumerate(confidences) if conf>self.min_confidence]
+        detections = [Detection(bbox_tlwh[i], conf, features[i], class_index[i]) for i, conf in enumerate(confidences) if conf>self.min_confidence]
 
         # run on non-maximum supression (useless) *******************************************************************
         boxes = np.array([d.tlwh for d in detections])
@@ -64,7 +64,7 @@ class DeepSort(object):
             box = track.to_tlwh()       # (xc,yc,a,h) to (x1,y1,w,h)
             x1,y1,x2,y2 = self._tlwh_to_xyxy(box)
             track_id = track.track_id
-            outputs.append(np.array([x1,y1,x2,y2,track_id], dtype=np.int))
+            outputs.append(np.array([x1,y1,x2,y2,track_id,track.class_index], dtype=np.int))
         if len(outputs) > 0:
             outputs = np.stack(outputs,axis=0)  # (#obj, 5) (x1,y1,x2,y2,ID)
         return outputs

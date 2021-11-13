@@ -159,5 +159,5 @@ class Tracker:
 
         self.tracks.append(Track(
             mean, covariance, self._next_id, self.n_init, self.max_age,
-            detection.feature)) # for new obj, create a new Track object for it
+            detection.feature, detection.class_index))  # for new obj, create a new Track object for it
         self._next_id += 1

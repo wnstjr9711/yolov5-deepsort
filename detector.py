@@ -25,8 +25,6 @@ class Detector:
         self.acc_threshold = 0.5
         self.iou_threshold = 0.5
 
-        self.items = dict()
-
     def __call__(self):
         """
         run detecting with option show
@@ -90,7 +88,7 @@ class Detector:
             confs = det[:, 4:5].cpu()
 
             # ****************************** deepsort ****************************
-            outputs = self.tracker.update(bbox_xywh, confs, im0)  # x1,y1,x2,y2,track_ID
+            outputs = self.tracker.update(bbox_xywh, confs, im0, det[:, 5].cpu().numpy())  # x1,y1,x2,y2,track_ID
         else:
             outputs = torch.zeros((0, 5))
 
@@ -113,8 +111,3 @@ class Detector:
             cv2.rectangle(img, (x1, y1), (x1 + t_size[0] + 3, y1 + t_size[1] + 4), color, -1)
             cv2.putText(img, label, (x1, y1 + t_size[1] + 4), cv2.FONT_HERSHEY_PLAIN, 2, [255, 255, 255], 2)
         return img
-
-    def get_items(self):
-        return self.items
-
-
