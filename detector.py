@@ -25,32 +25,51 @@ class Detector:
         self.acc_threshold = 0.5
         self.iou_threshold = 0.5
 
-    def __call__(self):
+        self.item = dict()
+
+    def __call__(self, ret=None, video_label=None):
         """
         run detecting with option show
         """
+        ############################## gui ##############################
+        from PySide2.QtGui import QImage, QPixmap
+        ############################## gui ##############################
         cap = self.video
         assert cap.isOpened()
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         last_out = None
-        for _ in tqdm(range(length)):
-            ret, frame = cap.read()
-            if _ % 2 == 0:
+        process_bar = tqdm(range(length), bar_format='{desc}: {percentage:3.0f}')
+        for current_frame_idx in process_bar:
+            _, frame = cap.read()
+            if current_frame_idx % 2 == 0:
                 output = self.image_track(frame)
                 last_out = output
             else:
                 output = last_out
 
+            ############################## gui ##############################
+            new_frame = frame
+            ############################## gui ##############################
             if len(output) > 0:
                 bbox_xyxy = output[:, :4]
                 idx = output[:, -2]
                 name = output[:, -1]
-                frame = self.draw_boxes(frame, bbox_xyxy, idx, name)  # BGR
+                for output_idx in range(len(output)):
+                    if idx[output_idx] not in self.item:
+                        x1, y1, x2, y2 = bbox_xyxy[output_idx]
+                        obj_frame = frame[y1:y2, x1:x2]
+                        self.item[idx[output_idx]] = (name[output_idx], obj_frame)
+                ############################## gui ##############################
+                new_frame = self.draw_boxes(frame, bbox_xyxy, idx, name)
+                ############################## gui ##############################
 
-            cv2.imshow("test", frame)
-            if cv2.waitKey(1) == ord('q'):  # q to quit
-                cv2.destroyAllWindows()
-                break
+            # ret = (frame, process_bar, self.item)  # process ratio, detected object
+            ############################## gui ##############################
+            img = cv2.resize(new_frame, dsize=(480, 320), interpolation=cv2.INTER_AREA)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            image = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format_RGB888)
+            video_label.setPixmap(QPixmap.fromImage(image))
+            ############################## gui ##############################
 
     def image_track(self, im0):
         img = letterbox(im0, new_shape=self.img_size)[0]

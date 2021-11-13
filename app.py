@@ -1,3 +1,4 @@
 from detector import Detector
 
-Detector('video/samplecar.mp4')()
+
+Detector('video/sample4.mp4')()
