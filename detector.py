@@ -7,15 +7,17 @@ from yaml_parser import config_deep_sort
 from tqdm import tqdm
 
 import torch
+import time
 import cv2
 
 
 class Detector:
     def __init__(self, url):
+        self.url = url
         self.video = cv2.VideoCapture(url)
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-        self.detector = torch.hub.load('ultralytics/yolov5', 'yolov5x', pretrained=True)
+        self.detector = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
         self.detector.to(self.device)
         self.detector.half()
         self.classes = self.detector.names
@@ -27,18 +29,26 @@ class Detector:
 
         self.item = dict()
 
-    def __call__(self, ret=None, video_label=None):
+    def __call__(self, gui):
         """
         run detecting with option show
         """
-        ############################## gui ##############################
-        from PySide2.QtGui import QImage, QPixmap
-        ############################## gui ##############################
         cap = self.video
         assert cap.isOpened()
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
         last_out = None
         process_bar = tqdm(range(length), bar_format='{desc}: {percentage:3.0f}')
+        ############################## gui ##############################
+        from PySide2.QtGui import QImage, QPixmap
+        import math
+        gui['title'].setText('Video Title: ' + self.url.split('/')[-1])
+        m = math.floor(length/fps/60)
+        s = int((length/fps) % 60)
+        gui['length'].setText('Video Length: {:02}:{:02}'.format(m, s))
+        gui['date'].setText('Uploaded Date: ' + str(time.ctime()))
+        num = 0
+        ############################## gui ##############################
         for current_frame_idx in process_bar:
             _, frame = cap.read()
             if current_frame_idx % 2 == 0:
@@ -57,19 +67,29 @@ class Detector:
                 for output_idx in range(len(output)):
                     if idx[output_idx] not in self.item:
                         x1, y1, x2, y2 = bbox_xyxy[output_idx]
-                        obj_frame = frame[y1:y2, x1:x2]
+                        obj_frame = np.array(frame[y1:y2, x1:x2])
                         self.item[idx[output_idx]] = (name[output_idx], obj_frame)
                 ############################## gui ##############################
                 new_frame = self.draw_boxes(frame, bbox_xyxy, idx, name)
                 ############################## gui ##############################
 
-            # ret = (frame, process_bar, self.item)  # process ratio, detected object
             ############################## gui ##############################
             img = cv2.resize(new_frame, dsize=(480, 320), interpolation=cv2.INTER_AREA)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             image = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format_RGB888)
-            video_label.setPixmap(QPixmap.fromImage(image))
-            ############################## gui ##############################
+            gui['video'].setPixmap(QPixmap.fromImage(image))
+            gui['status'].setText('Uploading: {:3}%'.format(int(str(process_bar))))
+            for key, value in self.item.items():
+                if key not in gui['key']:
+                    gui['key'].add(key)
+                    add = gui['detected'][num]
+                    num += 1
+                    add[0].setFixedSize(100, 100)
+                    img = cv2.resize(value[1], dsize=(100, 100), interpolation=cv2.INTER_CUBIC)
+                    image = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format_RGB888)
+                    add[0].setPixmap(QPixmap.fromImage(image))
+                    add[1] = value[0]
+            ############################ gui ##############################
 
     def image_track(self, im0):
         img = letterbox(im0, new_shape=self.img_size)[0]

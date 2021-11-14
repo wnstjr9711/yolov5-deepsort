@@ -10,7 +10,6 @@ display_size = app.primaryScreen().size()
 
 window = MainWindow()
 window.show()
-window.resize(display_size.width()/2, display_size.height()/2)
 window.setWindowTitle('verticV-Demo')
 
 loop = qasync.QEventLoop(app)
