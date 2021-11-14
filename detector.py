@@ -1,4 +1,6 @@
 import numpy as np
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QColor
 
 from yolov5.utils.augmentations import letterbox
 from yolov5.utils.general import non_max_suppression, scale_coords, xyxy2xywh
@@ -78,17 +80,27 @@ class Detector:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             image = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format_RGB888)
             gui['video'].setPixmap(QPixmap.fromImage(image))
-            gui['status'].setText('Uploading: {:3}%'.format(int(str(process_bar))))
+            status_msg = 'Uploading: {:3}%'.format(int(str(process_bar)))
+            if gui['status'].text() != status_msg:
+                gui['status'].setText(status_msg)
             for key, value in self.item.items():
                 if key not in gui['key']:
                     gui['key'].add(key)
                     add = gui['detected'][num]
+                    gui_label = add.children()[1]
+                    gui_name = add.children()[2]
                     num += 1
-                    add[0].setFixedSize(100, 100)
-                    img = cv2.resize(value[1], dsize=(100, 100), interpolation=cv2.INTER_CUBIC)
-                    image = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format_RGB888)
-                    add[0].setPixmap(QPixmap.fromImage(image))
-                    add[1] = value[0]
+                    gui_label.setFixedSize(100, 100)
+                    gui_label.setStyleSheet("background-color: rgb(0, 0, 0);")
+                    img_obj = value[1]
+                    image_obj = QImage(img_obj, img_obj.shape[1], img_obj.shape[0], img_obj.strides[0], QImage.Format_RGB888)
+                    gui_label.setPixmap(QPixmap.fromImage(image_obj).scaled(100, 100, Qt.KeepAspectRatio))
+                    gui_label.setAlignment(Qt.AlignCenter)
+                    m = math.floor(current_frame_idx / fps / 60)
+                    s = int((current_frame_idx / fps) % 60)
+                    gui_name.setText('   ID: ' + str(key) + '\n\n' +
+                                     '   CATEGORY: ' + self.classes[value[0]] + '\n\n' +
+                                     '   DISPLAYED AT: {:02}:{:02}'.format(m, s))
             ############################ gui ##############################
 
     def image_track(self, im0):
@@ -110,8 +122,11 @@ class Detector:
             pred = self.detector.model(img, augment=False)[0]
 
         # Apply NMS and filter object other than person (cls:0)
+        c = [i for i in range(1, len(self.classes))]
+        c.remove(65)
+        c.remove(79)
         pred = non_max_suppression(pred, self.acc_threshold, self.iou_threshold,
-                                   classes=[i for i in range(1, len(self.classes))])
+                                   classes=c)
 
         # get all obj ************************************************************
         det = pred[0]  # for video, bz is 1

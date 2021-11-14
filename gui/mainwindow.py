@@ -1,6 +1,6 @@
 from PySide2.QtCore import QThread
 from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QMainWindow, QLabel, QVBoxLayout
+from PySide2.QtWidgets import QMainWindow, QLabel, QWidget, QHBoxLayout
 from .ui import Ui_MainWindow
 import sys
 
@@ -26,9 +26,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.title.setText('Video Title: -')
         self.length.setText('Video Length: 00:00')
         self.date.setText('Uploaded Date: -')
-        self.labels = [[QLabel(self.scrollAreaWidgetContents), 'category'] for i in range(500)]
+
+        self.labels = [QWidget(self.scrollAreaWidgetContents) for i in range(100)]
         for i in self.labels:
-            self.verticalLayout_2.addWidget(i[0])
+            self.verticalLayout_2.addWidget(i)
+            self.verticalLayout = QHBoxLayout(i)
+            obj = QLabel(i)
+            name = QLabel(i)
+            self.verticalLayout.addWidget(obj)
+            self.verticalLayout.addWidget(name)
 
     def dragEnterEvent(self, e):
         e.accept()
