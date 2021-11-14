@@ -83,12 +83,14 @@ class Detector:
                 if key not in gui['key']:
                     gui['key'].add(key)
                     add = gui['detected'][num]
+                    gui_label = add.children()[1]
+                    gui_name = add.children()[2]
                     num += 1
-                    add[0].setFixedSize(100, 100)
+                    gui_label.setFixedSize(100, 100)
                     img = cv2.resize(value[1], dsize=(100, 100), interpolation=cv2.INTER_CUBIC)
                     image = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format_RGB888)
-                    add[0].setPixmap(QPixmap.fromImage(image))
-                    add[1] = value[0]
+                    gui_label.setPixmap(QPixmap.fromImage(image))
+                    gui_name.setText(self.classes[value[0]])
             ############################ gui ##############################
 
     def image_track(self, im0):
