@@ -18,7 +18,7 @@ class Detector:
         self.video = cv2.VideoCapture(url)
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-        self.detector = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+        self.detector = torch.hub.load('ultralytics/yolov5', 'yolov5x', pretrained=True)
         self.detector.to(self.device)
         self.detector.half()
         self.classes = self.detector.names
@@ -88,11 +88,14 @@ class Detector:
                 if value[0] not in c:
                     c.add(value[0])
                     cnum += 1
-                    gui['category'][cnum].setText(self.classes[value[0]])
-                    gui['category'][cnum].setVisible(True)
+                    if cnum <= 8:
+                        gui['category'][cnum].setText(self.classes[value[0]])
+                        gui['category'][cnum].setVisible(True)
 
                 if key not in gui['key']:
                     gui['key'].add(key)
+                    if num == 100:
+                        continue
                     add = gui['detected'][num]
                     gui_label = add.children()[1]
                     gui_name = add.children()[2]
@@ -132,6 +135,7 @@ class Detector:
         # Apply NMS and filter object other than person (cls:0)
         c = [i for i in range(1, len(self.classes))]
         c.remove(65)
+        c.remove(78)
         c.remove(79)
         pred = non_max_suppression(pred, self.acc_threshold, self.iou_threshold,
                                    classes=c)

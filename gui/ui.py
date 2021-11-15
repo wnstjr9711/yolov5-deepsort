@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_categoryQjpDKN.ui'
+## Form generated from reading UI file 'main_categoryyrLFMW.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -71,14 +71,26 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.total = QLabel(self.widget)
-        self.total.setObjectName(u"total")
-        self.total.setGeometry(QRect(500, 10, 231, 16))
         self.category = QWidget(self.widget)
         self.category.setObjectName(u"category")
-        self.category.setGeometry(QRect(500, 30, 471, 101))
+        self.category.setGeometry(QRect(500, 10, 471, 121))
         self.gridLayout = QGridLayout(self.category)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.total = QLabel(self.category)
+        self.total.setObjectName(u"total")
+
+        self.gridLayout.addWidget(self.total, 0, 0, 1, 1)
+
+        self.label_2 = QLabel(self.category)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
+
+        self.frame = QFrame(self.widget)
+        self.frame.setObjectName(u"frame")
+        self.frame.setGeometry(QRect(500, 10, 471, 121))
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Sunken)
 
         self.verticalLayout.addWidget(self.widget)
 
@@ -98,5 +110,6 @@ class Ui_MainWindow(object):
         self.date.setText(QCoreApplication.translate("MainWindow", u"Uploaded Date", None))
         self.info.setText(QCoreApplication.translate("MainWindow", u"Video Information", None))
         self.total.setText(QCoreApplication.translate("MainWindow", u"Total Count:", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Category:", None))
     # retranslateUi
 
