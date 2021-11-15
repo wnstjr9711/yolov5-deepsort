@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_categoryyrLFMW.ui'
+## Form generated from reading UI file 'main_categorycATeVW.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -91,6 +91,16 @@ class Ui_MainWindow(object):
         self.frame.setGeometry(QRect(500, 10, 471, 121))
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Sunken)
+        self.frame.raise_()
+        self.video.raise_()
+        self.label.raise_()
+        self.loading.raise_()
+        self.title.raise_()
+        self.length.raise_()
+        self.date.raise_()
+        self.info.raise_()
+        self.scrollArea.raise_()
+        self.category.raise_()
 
         self.verticalLayout.addWidget(self.widget)
 
