@@ -80,10 +80,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         i.setVisible(False)
 
 
-
-
-
-
 class VideoThread(QThread):
     def __init__(self, video, label, status, title, length, date, objects, detected, total, category):
         super(VideoThread, self).__init__()
@@ -102,6 +98,12 @@ class VideoThread(QThread):
         self.title.setText('Video Title: -')
         self.length.setText('Video Length: 00:00')
         self.date.setText('Uploaded Date: -')
+        for i in self.detected:
+            i.children()[1].clear()
+            i.children()[2].clear()
+        for i in self.category[1:]:
+            i.setText('')
+            i.setVisible(False)
 
     def run(self):
         detector = Detector(self.video)(gui={'video': self.label, 'status': self.status, 'title': self.title,
