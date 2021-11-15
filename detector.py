@@ -1,6 +1,5 @@
 import numpy as np
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QColor
 
 from yolov5.utils.augmentations import letterbox
 from yolov5.utils.general import non_max_suppression, scale_coords, xyxy2xywh
