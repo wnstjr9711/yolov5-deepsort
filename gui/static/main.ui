@@ -151,9 +151,9 @@
        <property name="geometry">
         <rect>
          <x>500</x>
-         <y>10</y>
+         <y>30</y>
          <width>471</width>
-         <height>961</height>
+         <height>941</height>
         </rect>
        </property>
        <property name="widgetResizable">
@@ -165,11 +165,24 @@
           <x>0</x>
           <y>0</y>
           <width>469</width>
-          <height>959</height>
+          <height>939</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2"/>
        </widget>
+      </widget>
+      <widget class="QLabel" name="total">
+       <property name="geometry">
+        <rect>
+         <x>500</x>
+         <y>10</y>
+         <width>231</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Total Count:</string>
+       </property>
       </widget>
      </widget>
     </item>

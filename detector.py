@@ -49,6 +49,8 @@ class Detector:
         gui['length'].setText('Video Length: {:02}:{:02}'.format(m, s))
         gui['date'].setText('Uploaded Date: ' + str(time.ctime()))
         num = 0
+        c = set()
+        cnum = 0
         ############################## gui ##############################
         for current_frame_idx in process_bar:
             _, frame = cap.read()
@@ -83,12 +85,19 @@ class Detector:
             if gui['status'].text() != status_msg:
                 gui['status'].setText(status_msg)
             for key, value in self.item.items():
+                if value[0] not in c:
+                    c.add(value[0])
+                    cnum += 1
+                    gui['category'][cnum].setText(self.classes[value[0]])
+                    gui['category'][cnum].setVisible(True)
+
                 if key not in gui['key']:
                     gui['key'].add(key)
                     add = gui['detected'][num]
                     gui_label = add.children()[1]
                     gui_name = add.children()[2]
                     num += 1
+                    gui['total'].setText('Total Count: {}'.format(num))
                     gui_label.setFixedSize(100, 100)
                     gui_label.setStyleSheet("background-color: rgb(0, 0, 0);")
                     img_obj = value[1]

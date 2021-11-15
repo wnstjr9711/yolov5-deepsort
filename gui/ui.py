@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainmTUzMr.ui'
+## Form generated from reading UI file 'main_categoryQjpDKN.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -63,14 +63,22 @@ class Ui_MainWindow(object):
         self.info.setAlignment(Qt.AlignCenter)
         self.scrollArea = QScrollArea(self.widget)
         self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setGeometry(QRect(500, 10, 471, 961))
+        self.scrollArea.setGeometry(QRect(500, 140, 471, 831))
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 469, 959))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 469, 829))
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+        self.total = QLabel(self.widget)
+        self.total.setObjectName(u"total")
+        self.total.setGeometry(QRect(500, 10, 231, 16))
+        self.category = QWidget(self.widget)
+        self.category.setObjectName(u"category")
+        self.category.setGeometry(QRect(500, 30, 471, 101))
+        self.gridLayout = QGridLayout(self.category)
+        self.gridLayout.setObjectName(u"gridLayout")
 
         self.verticalLayout.addWidget(self.widget)
 
@@ -89,5 +97,6 @@ class Ui_MainWindow(object):
         self.length.setText(QCoreApplication.translate("MainWindow", u"Video Length", None))
         self.date.setText(QCoreApplication.translate("MainWindow", u"Uploaded Date", None))
         self.info.setText(QCoreApplication.translate("MainWindow", u"Video Information", None))
+        self.total.setText(QCoreApplication.translate("MainWindow", u"Total Count:", None))
     # retranslateUi
 
