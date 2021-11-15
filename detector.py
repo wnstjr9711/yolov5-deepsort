@@ -94,7 +94,7 @@ class Detector:
                     img_obj = value[1]
                     image_obj = QImage(img_obj, img_obj.shape[1], img_obj.shape[0], img_obj.strides[0], QImage.Format_RGB888)
                     gui_label.setPixmap(QPixmap.fromImage(image_obj).scaled(100, 100, Qt.KeepAspectRatio))
-                    gui_label.setAlignment(Qt.AlignCenter)
+                    gui_label.setAlignment(Qt.AlignCenter|Qt.AlignVCenter)
                     m = math.floor(current_frame_idx / fps / 60)
                     s = int((current_frame_idx / fps) % 60)
                     gui_name.setText('   ID: ' + str(key) + '\n\n' +
